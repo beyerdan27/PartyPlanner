@@ -9,23 +9,25 @@
  * @param tablePosA current table position of attendee
  */
 public class Attendee{
-	private int coID, tableID, tablePos;
+	private int coID, tableID, tablePos, attID;
 	private String name, fname, lname;
-	public Attendee(String fnameInp, String lnameInp, int coIDInp){
+	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp){
 		name = fnameInp + lnameInp;
 		fname = fnameInp;
 		lname = lnameInp;
 		coID = coIDInp;
 		tableID = -1;
 		tablePos = -1;
+		attID = attIDInp;
 	}
-	public Attendee(String fnameInp, String lnameInp, int coIDInp, int tableIDA, int tablePosA){
+	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp, int tableIDA, int tablePosA){
 		name = fnameInp + lnameInp;
 		fname = fnameInp;
 		lname = lnameInp;
 		coID = coIDInp;
 		tableID = tableIDA;
 		tablePos = tablePosA;
+		attID = attIDInp;
 	}
 	public int getTableID(){
 		return tableID;
@@ -42,9 +44,15 @@ public class Attendee{
 	public int getCoID(){
 		return coID;
 	}
+	public int getID(){
+		 return attID;
+	 }
 	public void setCoID(int coIDA){
 		coID = coIDA;
 	}
+	public void setID(int IDA){
+		 attID = IDA;
+	 }
 	public String toString(){
 		return lname + ", " + fname + ", Company: " + coID + ", Location: Table " + tableID + " Position " + tablePos;
 	}

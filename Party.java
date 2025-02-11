@@ -15,11 +15,12 @@ public class Party{
 	private int numTables, numSeats;
 	private ArrayList<String> companyIDs = new ArrayList<String>();
 	private ArrayList<ArrayList<String>> guests = new ArrayList<ArrayList<String>>();
+	private ArrayList<Attendee> guestObjs = new ArrayList<Attendee>();
 	private ArrayList<Integer> numGuestsPerCompany = new ArrayList<Integer>();
-	numGuestsPerCompany.set(0, "-1");
 	public Party(int numTablesA, int numSeatsA){ //constructing the party, like it's a party planner
 		numTables = numTablesA;
 		numSeats = numSeatsA;
+		numGuestsPerCompany.add(-1);
 	}
 	public int loadData(){
 		try{
@@ -52,27 +53,31 @@ public class Party{
 		catch(FileNotFoundException e){
 			return 404;
 		}
-		/*(for(ArrayList<String> templistt:guests){
-			for(String s:templistt){
-			System.out.print(s+" ");
-		}
-		System.out.println();
-		}*/
+		for(String s:companyIDs) numGuestsPerCompany.add(0);
 		return 200;
-	}
-	public ArrayList<Integer> enumerateGuests(){ //returns list of companies that exceed attendance limits
-		String currentCompanyIDBeingCounted = guests.get(0).get(3);
-		int currentCount=0;
 		for(ArrayList<String> templist:guests){
-			if(templist.get(3).equals(currentCompanyIDBeingCounted)){
-				currentCount++;
-				numGuestsPerCompany.set(currentCompanyIDBeingCounted, currentCount);
-			} else {
-				currentCount=1;
-				currentCompanyIDBeingCounted = templist.get(3);
+			guestObjs.add(new Attendee(templist //PICK UP HERE
+		}
+	}
+	public ArrayList<Integer> enumerateGuests(){ //return list of party guests who exceed limits
+		int currentCompanyIDBeingCounted;
+		for(ArrayList<String> templist:guests){
+			currentCompanyIDBeingCounted = Integer.parseInt(templist.get(3));
+			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted);
+			if(tempct = 10){
+					
 			}
-		}//INCOMPLETE
-			
+			tempct++;
+			numGuestsPerCompany.set(currentCompanyIDBeingCounted, tempct);
+		}
+		ArrayList<Integer> faultyentries = new ArrayList<Integer>();
+		int tc=0;
+		for(int s:numGuestsPerCompany){
+			System.out.println(s);
+			tc++;
+			if(s>numTables) faultyentries.add(tc);
+		}
+		return faultyentries;
 	}
 	
 }
