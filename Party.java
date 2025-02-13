@@ -17,12 +17,13 @@ public class Party{
 	private ArrayList<ArrayList<String>> guests = new ArrayList<ArrayList<String>>();
 	private ArrayList<Attendee> guestObjs = new ArrayList<Attendee>();
 	private ArrayList<Integer> numGuestsPerCompany = new ArrayList<Integer>();
+	private int numCompanies;
 	public Party(int numTablesA, int numSeatsA){ //constructing the party, like it's a party planner
 		numTables = numTablesA;
 		numSeats = numSeatsA;
 		numGuestsPerCompany.add(-1);
 	}
-	public int loadData(){
+	public int loadData(){ //parses every file necesssary and sets all vars related to that, run before enumerateGuests()
 		try{
 			File companies = new File("companies.txt");
 			Scanner reader1 = new Scanner(companies);
@@ -33,6 +34,7 @@ public class Party{
 				}
 			}
 			reader1.close();
+			numCompanies = companyIDs.size();
 		}
 		catch(FileNotFoundException e){
 			return 404;
@@ -54,30 +56,42 @@ public class Party{
 			return 404;
 		}
 		for(String s:companyIDs) numGuestsPerCompany.add(0);
+		for(ArrayList<String> templist:guests){
+			guestObjs.add((new Attendee(Integer.parseInt(templist.get(0)), templist.get(1), templist.get(2), Integer.parseInt(templist.get(3))))); //PICK UP HERE
+		}
+		for(Attendee att:guestObjs){
+			System.out.println(att.toString());
+		}
 		return 200;
-		for(ArrayList<String> templist:guests){
-			guestObjs.add(new Attendee(templist //PICK UP HERE
-		}
 	}
-	public ArrayList<Integer> enumerateGuests(){ //return list of party guests who exceed limits
-		int currentCompanyIDBeingCounted;
-		for(ArrayList<String> templist:guests){
-			currentCompanyIDBeingCounted = Integer.parseInt(templist.get(3));
+	public void enumerateGuests(){ //this is a thing for some reason and it sucks and i dont think its necessary but im doing it anyway to avoi d anything stupid happening in the future
+		for(Attendee att:guestObjs){
+			int currentCompanyIDBeingCounted = att.getCoID();
 			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted);
-			if(tempct = 10){
-					
+			if(tempct == 10){
+				att.setAttendance(false);
+			} else {
+				numGuestsPerCompany.set(currentCompanyIDBeingCounted, tempct+1);
+				att.setAttendance(true);
 			}
-			tempct++;
-			numGuestsPerCompany.set(currentCompanyIDBeingCounted, tempct);
 		}
-		ArrayList<Integer> faultyentries = new ArrayList<Integer>();
-		int tc=0;
-		for(int s:numGuestsPerCompany){
-			System.out.println(s);
-			tc++;
-			if(s>numTables) faultyentries.add(tc);
+		for(Attendee attasdf:guestObjs){
+			System.out.println(attasdf.getAttendance());
 		}
-		return faultyentries;
+		for(int i:numGuestsPerCompany){
+			System.out.println(i);
+		}
+		if(numTables*numSeats<guestObjs.size()){
+			int differential = (guestObjs.size()-(numTables*numSeats));
+			//System.out.println("ASDFJASLDIFGJSLGJLASKFGJLAKDFJG " + differential);
+			for(int i=10;i>0;i++){
+				for(int ){ //stupif method wont work i hate this
+					
+				}
+			}
+		}
+					
 	}
+	public void sortGuests(){} //LOL i wonder how many centuries until i'll be able to rewrite this
 	
 }

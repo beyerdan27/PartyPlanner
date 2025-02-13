@@ -11,6 +11,7 @@
 public class Attendee{
 	private int coID, tableID, tablePos, attID;
 	private String name, fname, lname;
+	private boolean isAttending;
 	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp){
 		name = fnameInp + lnameInp;
 		fname = fnameInp;
@@ -37,6 +38,12 @@ public class Attendee{
 	}
 	public int getTablePos(){
 		return tablePos;
+	}
+	public void setAttendance(boolean attA){
+		isAttending = attA;
+	}
+	public boolean getAttendance(){
+		return isAttending;
 	}
 	public void setTablePos(int tablePosA){
 		tablePos = tablePosA;
