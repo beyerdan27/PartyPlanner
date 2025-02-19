@@ -84,13 +84,28 @@ public class Party{
 		if(numTables*numSeats<guestObjs.size()){
 			int differential = (guestObjs.size()-(numTables*numSeats));
 			//System.out.println("ASDFJASLDIFGJSLGJLASKFGJLAKDFJG " + differential);
-			for(int i=10;i>0;i++){
-				for(int ){ //stupif method wont work i hate this
-					
+			//this is essentially going through and taking equal numbers of guests from every company, just starting with the biggest ones.
+			for(int i=10; i>0; i--){ //seeing if any companies have ten, taking from them first, then nine, etc, etc
+				int templen = numGuestsPerCompany.size();
+				for(int a=0;a<templen;a++){ //looping through every company
+					if(numGuestsPerCompany.get(a)==i){//if company happens to have high num of ppl
+						int tempval = numGuestsPerCompany.get(a);
+						numGuestsPerCompany.set(a, tempval-1);//decrease company's attendance by one
+						for(Attendee att: guestObjs){//executing above statement
+							if(att.getCoID()==Integer.parseInt(companyIDs.get(a))){//if we land on an attendee from right company
+								if(att.getAttendance()==true){//if they're actually going
+									att.setAttendance(false);
+									differential-=1;;//forcing them to not go
+									break;
+								}
+							}
+						}
+					}
 				}
+				if(differential==0) break;
 			}
+			if(differential!=0) System.out.println("Error: cannot sufficiently reduce guest list");
 		}
-					
 	}
 	public void sortGuests(){} //LOL i wonder how many centuries until i'll be able to rewrite this
 	
