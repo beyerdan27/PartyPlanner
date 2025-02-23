@@ -1,3 +1,8 @@
+/**
+ * Tester.java class for testing functionality of partyplanner
+ * Preconditions: partyguests.txt and companies.txt exist in same directory
+ * Postconditions: successful test of partyplanner
+ */
 public class Tester{
 	public static void main(String[] args){
 		Party temp = new Party(10, 10);

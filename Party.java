@@ -1,7 +1,7 @@
 /**
  * Party.java class for managing party logic in PartyPlanner
  * Preconditions: partyguests.txt and companies.txt files to import
- * Postconditions: loaded party guests, sorted at each table
+ * Postconditions: loaded party guests, sorted at each table, allows user to interact and find individual guests and print rosters
  * @param numTablesA
  * @param numSeatsA
  */
@@ -23,8 +23,8 @@ public class Party{
 	public Party(int numTablesA, int numSeatsA){ //constructing the party, like it's a party planner
 		numTables = numTablesA;
 		numSeats = numSeatsA;
-		numGuestsPerCompany.add(-1);
-		univScan = new Scanner(System.in);
+		numGuestsPerCompany.add(-1); //to make it so i dont have to +1 index all .get() calls to NGPC
+		univScan = new Scanner(System.in); //yes it is never closed, but trying to use individual scanners for every user input would be a traumatic experience and would definitely never work
 		System.out.println(" _____        _____ _________     __\n" + //
 						"|  __ \\ /\\   |  __ \\__   __\\ \\   / /\n" + //
 						"| |__) /  \\  | |__) | | |   \\ \\_/ / \n" + //
@@ -37,7 +37,7 @@ public class Party{
 						"| |__) | |       /  \\  |  \\| |  \\| | |__  | |__) |\n" + //
 						"|  ___/| |      / /\\ \\ | . ` | . ` |  __| |  _  / \n" + //
 						"| |    | |____ / ____ \\| |\\  | |\\  | |____| | \\ \\ \n" + //
-						"|_|    |______/_/    \\_\\_| \\_|_| \\_|______|_|  \\_\\"); //this was formatted by VSCode from a paste
+						"|_|    |______/_/    \\_\\_| \\_|_| \\_|______|_|  \\_\\"); //this was formatted by VSCode from a paste, which is pretty cool, i didn't know it could do that
 		System.out.println("\nLet's plan a party!");
 	}
 	public int loadData(){ //parses every file necesssary and sets all vars related to that, run before enumerateGuests()
@@ -47,7 +47,7 @@ public class Party{
 			while(reader1.hasNextLine()){
 				String temp = reader1.nextLine();
 				if(temp.length()>0){
-					companyIDs.add(temp.substring(3));
+					companyIDs.add(temp.substring(3)); //3 is where the company name begins - this list stores each company name, the index is the company ID
 				}
 			}
 			reader1.close();
@@ -64,7 +64,7 @@ public class Party{
 				if(temp.length>0){
 					ArrayList<String> templist = new ArrayList<String>();
 					for(String t:temp) templist.add(t);
-					guests.add(templist);
+					guests.add(templist); //arraylist used for .split(), copied into objects later
 				}
 			}
 			reader2.close();
@@ -72,7 +72,7 @@ public class Party{
 		catch(FileNotFoundException e){
 			return 404;
 		}
-		for(String s:companyIDs) numGuestsPerCompany.add(0);
+		for(String s:companyIDs) numGuestsPerCompany.add(0); //filling it with zeroes to avoid IndexOutOfBoundsException, actually filled in at EnumGuests
 		for(ArrayList<String> templist:guests){ //converting all guest lists into actual objects which are used for the rest of the program - the reason lists were used in the first place was to to utilize the .split() method
 			guestObjs.add((new Attendee(Integer.parseInt(templist.get(0)), templist.get(1), templist.get(2), Integer.parseInt(templist.get(3))))); //PICK UP HERE
 		}
@@ -85,7 +85,7 @@ public class Party{
 		for(Attendee att:guestObjs){
 			int currentCompanyIDBeingCounted = att.getCoID();
 			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted); 
-			if(tempct == 10){
+			if(tempct == 10){ //if 10 guests from that company are already going
 				att.setAttendance(false);
 			} else {
 				numGuestsPerCompany.set(currentCompanyIDBeingCounted, tempct+1);
@@ -99,7 +99,7 @@ public class Party{
 			System.out.println(i);
 		}*/
 		if(numTables*numSeats<guestObjs.size()){
-			int differential = (guestObjs.size()-(numTables*numSeats));
+			int differential = (guestObjs.size()-(numTables*numSeats)); //number of guests by which roster must be reduced
 			//System.out.println("ASDFJASLDIFGJSLGJLASKFGJLAKDFJG " + differential);
 			//this is essentially going through and taking equal numbers of guests from every company, just starting with the biggest ones.
 			for(int i=10; i>0; i--){ //seeing if any companies have ten, taking from them first, then nine, etc, etc
@@ -111,17 +111,17 @@ public class Party{
 							if(att.getCoID()==a){//if we land on an attendee from right company
 								if(att.getAttendance()==true){//if they're actually going
 									att.setAttendance(false);
-									differential-=1;;//forcing them to not go
+									differential-=1;//forcing them to not go
 									break;
 								}
 							}
 						}
 					}
-					if(differential==0) break;					
+					if(differential==0) break; //honestly have no clue why this is here the code just breaks if i remove it				
 				}
 				if(differential==0) break;
 			}
-			if(differential!=0) System.out.println("Error: cannot sufficiently reduce guest list");
+			if(differential!=0) System.out.println("Error: cannot sufficiently reduce guest list"); //should never happen in theory but just in case
 			/*for(int i:numGuestsPerCompany){
 				System.out.println(i);
 			}*/
@@ -139,7 +139,7 @@ public class Party{
 					tempAttFN = univScan.nextLine();
 					System.out.println("\nEnter the LAST NAME of the attendee:\n");
 					tempAttLN = univScan.nextLine();
-					System.out.println("\nEnter the COMPANY ID of the attendee:\n");
+					System.out.println("\nEnter the COMPANY ID of the attendee:\n"); //This trusts the user to enter a valid ID
 					for(;;){
 					try{
 						tempCoID = Integer.parseInt(univScan.nextLine());
@@ -219,7 +219,7 @@ public class Party{
 		System.out.println("\nSuccessfully sorted " + tempasdf + " of " + guestObjs.size() + " guests!\n");
 	}
 	public boolean getYN(){ //implements a quick scanner to get a y/n input from user - this is a separate method because of how often it was used
-		boolean temp; //just stores output of user so we can close the scanner to save memory
+		boolean temp;
 		for(;;){
 			//System.out.println("tihgn");
 			String response = univScan.nextLine();
@@ -229,20 +229,20 @@ public class Party{
 			};
 			if(response.equals("N")){
 				temp = false;
-				break;
+				break; //this is the stupidest possible way to do it I'm sure
 			}
 			System.out.println("\nPlease format your response Y/N:\n");
 		}
 		return temp;
 	}
-	public void findAttendeeByID(int id){
+	public void findAttendeeByID(int id){//just loops through guestObjs until finds the ID, yes it could be more efficient, but don't want it to break if partyguests.txt isn't sorted
 		if(id<0||id>guestObjs.size()){
 			System.out.println("\nInvalid ID.\n");
 			return;
 		}
 		System.out.println("\n"+guestObjs.get(id-1).toString()+"\n");
 	}
-	public void findAttendeeByName(String fname, String lname){
+	public void findAttendeeByName(String fname, String lname){ //same thing, just loops until it finds the name
 		for(Attendee att:guestObjs){
 			if(att.getFName().equals(fname)&&att.getLName().equals(lname)){
 				System.out.println("\n"+att.toString()+"\n");
@@ -251,7 +251,7 @@ public class Party{
 		}
 		System.out.println("\nAttendee not found.\n");
 	}
-	public void enterFindMode(){
+	public void enterFindMode(){//allows user to run the toString() on any user they "find" using above methods, this just implements it with user input control and flow
 		System.out.println("\nWould you like to find any attendees manually before printing rosters? (Y/N)\n");
 		boolean tempbool = getYN();
 		if(tempbool){
@@ -274,7 +274,7 @@ public class Party{
 							break;
 						}
 						catch(NumberFormatException e){
-							System.out.println("\nFormat your response in an INTEGER:\n"); //companyID must be an integer for other parts of code to NOT throw this error, so catching it here
+							System.out.println("\nFormat your response in an INTEGER:\n"); //must be an int because findbyID will cry and throw an error if not
 							continue;
 						}
 					}
@@ -286,21 +286,21 @@ public class Party{
 			}	
 		}
 	}
-	public void printRosterByTable(){
+	public void printRosterByTable(){//loops through all the tables and displays a toString() for each guest
 		for(int i=0; i<numTables; i++){
 			System.out.println("\nTable " + (i+1) + ":\n");
 			for(Attendee att:tableObjs.get(i).getTableRoster()) System.out.println(att.toString());
 		}
 	}
-	public void printRosterByCompany(){
-		for(int i=1; i<numCompanies;i++){
-			System.out.println("\nCompany " + (i) + " (" + companyIDs.get(i) + "):\n");
+	public void printRosterByCompany(){//same thing as above, just by company, and this time it has to check it guest is attending or not
+		for(int i=1; i<=numCompanies;i++){
+			System.out.println("\nCompany " + (i) + " (" + companyIDs.get(i-1) + "):\n");
 			for(Attendee att:guestObjs){
 				if(att.getCoID()==(i)&&att.getAttendance()) System.out.println(att.toString());
 			}
 		}
 	}
-	public void enterPrintingMode(){
+	public void enterPrintingMode(){//implements both above methods with user input control and flow
 		System.out.println("\nWould you like to print a roster? (Y/N)\n");
 		boolean tempbool = getYN();
 		if(tempbool){

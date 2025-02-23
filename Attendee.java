@@ -12,7 +12,7 @@ public class Attendee{
 	private int coID, tableID, tablePos, attID;
 	private String name, fname, lname;
 	private boolean isAttending;
-	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp){
+	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp){//sets all instance vars of attendee
 		name = fnameInp + lnameInp;
 		fname = fnameInp;
 		lname = lnameInp;
@@ -21,7 +21,7 @@ public class Attendee{
 		tablePos = -1;
 		attID = attIDInp;
 	}
-	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp, int tableIDA, int tablePosA){
+	public Attendee(int attIDInp, String fnameInp, String lnameInp, int coIDInp, int tableIDA, int tablePosA){//sets all instance vars of attendee, plus tableID and tablePos if a human needed to intervene in the sorting process
 		name = fnameInp + lnameInp;
 		fname = fnameInp;
 		lname = lnameInp;
@@ -30,6 +30,7 @@ public class Attendee{
 		tablePos = tablePosA;
 		attID = attIDInp;
 	}
+	//all the mutators/accessors, some are never even used, but they're here just in case
 	public int getAttID(){
 		return attID;
 	}
@@ -72,7 +73,7 @@ public class Attendee{
 	public void setID(int IDA){
 		 attID = IDA;
 	 }
-	public String toString(){
+	public String toString(){//my favorite function in this whole project
 		return lname + ", " + fname + ", Company: " + coID + ", Location: Table " + tableID + " Position " + tablePos;
 	}
 	//INCOMPLETE
