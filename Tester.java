@@ -1,22 +1,11 @@
-import java.util.ArrayList;
 public class Tester{
 	public static void main(String[] args){
-		ArrayList<Attendee> attList = new ArrayList<Attendee>();
-		//just adding the participants
-		/*for(Attendee att:attList){ //testing the toString(); function for every attendee object - and ID of -1 means undefined or not set yet
-			System.out.println(att.toString());
-		}
-		
-		for(Attendee att:attList){ //searching for company two: in this case it's John Smith and Vladiimir Putin
-			if(att.getCoID() == 2) System.out.println("\n\nCOMPANY ID TWO: " + att.toString());
-		}*/
 		Party temp = new Party(10, 10);
-		temp.loadData();
-		//temp.enterManually();
-		temp.enumerateGuests();
-		temp.sortGuests();
-		/*for(int c:temp.enumerateGuests()){
-			System.out.println(c);
-		}*/
+		temp.loadData(); //loads file data, must be done before anything else
+		temp.enterManually(); //adds additional data to the pile, manual user input
+		temp.enumerateGuests(); //this part throws a fit if any company broke the rules and it restricts guests fairly so that the party can be full but not overbooked
+		temp.sortGuests(); //sorts guests into tables, self-explanatory
+		temp.enterFindMode(); //allows user to find any guest either by name or attendee ID
+		temp.enterPrintingMode(); //allows user to print a roster either by table or by company
 	}
 }

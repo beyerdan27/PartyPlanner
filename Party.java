@@ -235,5 +235,88 @@ public class Party{
 		}
 		return temp;
 	}
-	
+	public void findAttendeeByID(int id){
+		if(id<0||id>guestObjs.size()){
+			System.out.println("\nInvalid ID.\n");
+			return;
+		}
+		System.out.println("\n"+guestObjs.get(id-1).toString()+"\n");
+	}
+	public void findAttendeeByName(String fname, String lname){
+		for(Attendee att:guestObjs){
+			if(att.getFName().equals(fname)&&att.getLName().equals(lname)){
+				System.out.println("\n"+att.toString()+"\n");
+				return;
+			}
+		}
+		System.out.println("\nAttendee not found.\n");
+	}
+	public void enterFindMode(){
+		System.out.println("\nWould you like to find any attendees manually before printing rosters? (Y/N)\n");
+		boolean tempbool = getYN();
+		if(tempbool){
+			for(;;){//loop for finding ppl, prompts for find type each time
+				System.out.println("\nFind by name rather than Attendee ID? (Y/N)\n");
+				boolean nameMode = getYN();
+				String tempAttFN2, tempAttLN2;
+				int tempAttID;
+				if(nameMode){
+				System.out.println("\nEnter the FIRST NAME of the attendee:\n");
+				tempAttFN2 = univScan.nextLine();
+				System.out.println("\nEnter the LAST NAME of the attendee:\n");
+				tempAttLN2 = univScan.nextLine();
+				findAttendeeByName(tempAttFN2, tempAttLN2);
+				} else {
+					System.out.println("\nEnter the ID of the attendee:\n");
+					for(;;){
+						try{
+							tempAttID = Integer.parseInt(univScan.nextLine());
+							break;
+						}
+						catch(NumberFormatException e){
+							System.out.println("\nFormat your response in an INTEGER:\n"); //companyID must be an integer for other parts of code to NOT throw this error, so catching it here
+							continue;
+						}
+					}
+					findAttendeeByID(tempAttID);	
+				}
+				
+				System.out.println("\nWould you like to find another attendee? (Y/N)\n");
+				if(!getYN()) break;
+			}	
+		}
+	}
+	public void printRosterByTable(){
+		for(int i=0; i<numTables; i++){
+			System.out.println("\nTable " + (i+1) + ":\n");
+			for(Attendee att:tableObjs.get(i).getTableRoster()) System.out.println(att.toString());
+		}
+	}
+	public void printRosterByCompany(){
+		for(int i=1; i<numCompanies;i++){
+			System.out.println("\nCompany " + (i) + " (" + companyIDs.get(i) + "):\n");
+			for(Attendee att:guestObjs){
+				if(att.getCoID()==(i)&&att.getAttendance()) System.out.println(att.toString());
+			}
+		}
+	}
+	public void enterPrintingMode(){
+		System.out.println("\nWould you like to print a roster? (Y/N)\n");
+		boolean tempbool = getYN();
+		if(tempbool){
+			for(;;){//loop for printing rosters, as many as you like
+				System.out.println("\nPrint roster by TABLE rather than by COMPANY? (Y/N)\n");
+				boolean nameMode = getYN();
+				System.out.println("\nPrinting mode only displays attendees which were successfully sorted.\n");
+				if(nameMode){
+				printRosterByTable();
+				} else {
+				printRosterByCompany();
+				}
+				
+				System.out.println("\nWould you like to print another roster? (Y/N)\n");
+				if(!getYN()) break;
+			}	
+		}		
+	}
 }

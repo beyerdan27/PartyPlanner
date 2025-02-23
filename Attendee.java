@@ -33,6 +33,15 @@ public class Attendee{
 	public int getAttID(){
 		return attID;
 	}
+	public String getFName(){
+		return fname;
+	}
+	public String getLName(){
+		return lname;
+	}
+	public String getName(){
+		return name;
+	}
 	public int getTableID(){
 		return tableID;
 	}
