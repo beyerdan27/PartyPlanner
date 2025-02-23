@@ -14,10 +14,11 @@ public class Party{
 	//private String[] temp = new String[2];
 	private int numTables, numSeats;
 	private ArrayList<String> companyIDs = new ArrayList<String>();
-	private ArrayList<ArrayList<String>> guests = new ArrayList<ArrayList<String>>();
+	private ArrayList<ArrayList<String>> guests = new ArrayList<ArrayList<String>>(); //temporary and only used once for .split()
 	private ArrayList<Attendee> guestObjs = new ArrayList<Attendee>();
 	private ArrayList<Integer> numGuestsPerCompany = new ArrayList<Integer>();
-	private int numCompanies;
+	private ArrayList<Table> tableObjs = new ArrayList<Table>();
+	private int numCompanies; //dont know why this isnt used
 	Scanner univScan;
 	public Party(int numTablesA, int numSeatsA){ //constructing the party, like it's a party planner
 		numTables = numTablesA;
@@ -72,7 +73,7 @@ public class Party{
 			return 404;
 		}
 		for(String s:companyIDs) numGuestsPerCompany.add(0);
-		for(ArrayList<String> templist:guests){
+		for(ArrayList<String> templist:guests){ //converting all guest lists into actual objects which are used for the rest of the program - the reason lists were used in the first place was to to utilize the .split() method
 			guestObjs.add((new Attendee(Integer.parseInt(templist.get(0)), templist.get(1), templist.get(2), Integer.parseInt(templist.get(3))))); //PICK UP HERE
 		}
 		/*for(Attendee att:guestObjs){
@@ -80,10 +81,10 @@ public class Party{
 		}*/
 		return 200;
 	}
-	public void enumerateGuests(){ //this is a thing for some reason and it sucks and i dont think its necessary but im doing it anyway to avoi d anything stupid happening in the future
+	public void enumerateGuests(){ //this is the part that whines if any of the math wont work out so run this before sortGuests to avoid errors (it also eliminates excess guests)
 		for(Attendee att:guestObjs){
 			int currentCompanyIDBeingCounted = att.getCoID();
-			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted);
+			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted); 
 			if(tempct == 10){
 				att.setAttendance(false);
 			} else {
@@ -159,10 +160,65 @@ public class Party{
 					if(!getYN()) break;
 				}	
 			}
-		System.out.println(guestObjs.get(guestObjs.size()-1).toString()); //LATEST ADDITION TO GUESTOBJS 
+		//System.out.println(guestObjs.get(guestObjs.size()-1).toString()); //LATEST ADDITION TO GUESTOBJS for debugging
 	}
-	public void sortGuests(){} //LOL i wonder how many centuries until i'll be able to rewrite this
-	public boolean getYN(){
+	public void sortGuests(){ //LOL i wonder how many centuries until i'll be able to rewrite this
+		//if run after enumguests, this should produce no errors (haha funny right)
+		//places largest companies first
+		//algo rotates starting table each time
+		int startingTableIndex=0; //indicates table at which populating will begin for any company, rotating right
+		int currentPopulatingIndex;
+		int guestsRemaining;
+		Table currentTable;
+		Attendee currentAttendee;
+		for(int i=0; i<numTables; i++) tableObjs.add(new Table(numSeats)); //populate array with tables
+		for(int i=10;i>0;i--){//actually populating indiv. tables, one company at a time and starting with largest //\\ USE I AS COMPANY SIZE
+			for(int a=0;a<numCompanies;a++){ //looping through every company //\\ USE VAR A AS COMPANYID
+				if(numGuestsPerCompany.get(a)==i){
+					//populating an entire company:
+					currentPopulatingIndex = startingTableIndex;
+					guestsRemaining = i;
+					while(guestsRemaining>0){
+						currentTable = tableObjs.get(currentPopulatingIndex);
+						//GETTING A GUEST TO PLACE, checking for if already placed and coid matches int a
+
+						//This value of currentAttendee will ALWAYS be changed, but this is so the compiler doesnt throw a temper tantrum because it doesnt understand that
+						currentAttendee = guestObjs.get(0);
+						//this downselects currentattendee based on if theyre attending, already placed or not, and the right company id
+						for(Attendee att:guestObjs){
+							if(att.getCoID()==a&&(att.getTableID()<0&&att.getAttendance())){
+								currentAttendee=att;
+								break;
+							}
+						}
+						if((!currentTable.isCompanyHere(a))&&currentTable.getRemainingSeats()>0){//just checking to make sure something else didnt go horribly wrong and that the tables not full
+							currentTable.addAttendee(currentAttendee);
+							currentAttendee.setTableID(currentPopulatingIndex+1); //tableID will NOT be 0-indexed
+							currentAttendee.setTablePos(currentTable.getPositionOfAttendeeAboutToBePlaced());
+							guestsRemaining-=1;
+						}
+						if(currentPopulatingIndex>=numSeats-1){ //rotating right
+							currentPopulatingIndex=0;
+						} else {
+							currentPopulatingIndex++;
+						}
+					}
+					//Rotate starting index right
+					if(startingTableIndex>=numSeats-1){ 
+						startingTableIndex=0;
+					} else {
+						startingTableIndex++;
+					}
+				}
+			}
+		}
+		int tempasdf=0;
+		for(Attendee att:guestObjs){
+			if(att.getAttendance()) tempasdf++;
+		}
+		System.out.println("\nSuccessfully sorted " + tempasdf + " of " + guestObjs.size() + " guests!\n");
+	}
+	public boolean getYN(){ //implements a quick scanner to get a y/n input from user - this is a separate method because of how often it was used
 		boolean temp; //just stores output of user so we can close the scanner to save memory
 		for(;;){
 			//System.out.println("tihgn");
@@ -178,6 +234,6 @@ public class Party{
 			System.out.println("\nPlease format your response Y/N:\n");
 		}
 		return temp;
-	} //implements a quick scanner to get a y/n input from user - this is a separate method because of how often it was used
+	}
 	
 }

@@ -30,6 +30,9 @@ public class Attendee{
 		tablePos = tablePosA;
 		attID = attIDInp;
 	}
+	public int getAttID(){
+		return attID;
+	}
 	public int getTableID(){
 		return tableID;
 	}

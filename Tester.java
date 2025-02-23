@@ -12,8 +12,9 @@ public class Tester{
 		}*/
 		Party temp = new Party(10, 10);
 		temp.loadData();
+		//temp.enterManually();
 		temp.enumerateGuests();
-		temp.enterManually();
+		temp.sortGuests();
 		/*for(int c:temp.enumerateGuests()){
 			System.out.println(c);
 		}*/
