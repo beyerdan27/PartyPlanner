@@ -18,10 +18,26 @@ public class Party{
 	private ArrayList<Attendee> guestObjs = new ArrayList<Attendee>();
 	private ArrayList<Integer> numGuestsPerCompany = new ArrayList<Integer>();
 	private int numCompanies;
+	Scanner univScan;
 	public Party(int numTablesA, int numSeatsA){ //constructing the party, like it's a party planner
 		numTables = numTablesA;
 		numSeats = numSeatsA;
 		numGuestsPerCompany.add(-1);
+		univScan = new Scanner(System.in);
+		System.out.println(" _____        _____ _________     __\n" + //
+						"|  __ \\ /\\   |  __ \\__   __\\ \\   / /\n" + //
+						"| |__) /  \\  | |__) | | |   \\ \\_/ / \n" + //
+						"|  ___/ /\\ \\ |  _  /  | |    \\   /  \n" + //
+						"| |  / ____ \\| | \\ \\  | |     | |   \n" + //
+						"|_| /_/    \\_\\_|  \\_\\ |_|     |_|   \n" + //
+						"                                    \n" + //
+						" _____  _               _   _ _   _ ______ _____  \n" + //
+						"|  __ \\| |        /\\   | \\ | | \\ | |  ____|  __ \\ \n" + //
+						"| |__) | |       /  \\  |  \\| |  \\| | |__  | |__) |\n" + //
+						"|  ___/| |      / /\\ \\ | . ` | . ` |  __| |  _  / \n" + //
+						"| |    | |____ / ____ \\| |\\  | |\\  | |____| | \\ \\ \n" + //
+						"|_|    |______/_/    \\_\\_| \\_|_| \\_|______|_|  \\_\\"); //this was formatted by VSCode from a paste
+		System.out.println("\nLet's plan a party!");
 	}
 	public int loadData(){ //parses every file necesssary and sets all vars related to that, run before enumerateGuests()
 		try{
@@ -59,9 +75,9 @@ public class Party{
 		for(ArrayList<String> templist:guests){
 			guestObjs.add((new Attendee(Integer.parseInt(templist.get(0)), templist.get(1), templist.get(2), Integer.parseInt(templist.get(3))))); //PICK UP HERE
 		}
-		for(Attendee att:guestObjs){
+		/*for(Attendee att:guestObjs){
 			System.out.println(att.toString());
-		}
+		}*/
 		return 200;
 	}
 	public void enumerateGuests(){ //this is a thing for some reason and it sucks and i dont think its necessary but im doing it anyway to avoi d anything stupid happening in the future
@@ -75,12 +91,12 @@ public class Party{
 				att.setAttendance(true);
 			}
 		}
-		for(Attendee attasdf:guestObjs){
+		/*for(Attendee attasdf:guestObjs){
 			System.out.println(attasdf.getAttendance());
-		}
-		for(int i:numGuestsPerCompany){
+		}*/
+		/*for(int i:numGuestsPerCompany){
 			System.out.println(i);
-		}
+		}*/
 		if(numTables*numSeats<guestObjs.size()){
 			int differential = (guestObjs.size()-(numTables*numSeats));
 			//System.out.println("ASDFJASLDIFGJSLGJLASKFGJLAKDFJG " + differential);
@@ -89,10 +105,9 @@ public class Party{
 				int templen = numGuestsPerCompany.size();
 				for(int a=0;a<templen;a++){ //looping through every company
 					if(numGuestsPerCompany.get(a)==i){//if company happens to have high num of ppl
-						int tempval = numGuestsPerCompany.get(a);
-						numGuestsPerCompany.set(a, tempval-1);//decrease company's attendance by one
+						numGuestsPerCompany.set(a, i-1);//decrease company's attendance by one
 						for(Attendee att: guestObjs){//executing above statement
-							if(att.getCoID()==Integer.parseInt(companyIDs.get(a))){//if we land on an attendee from right company
+							if(att.getCoID()==a){//if we land on an attendee from right company
 								if(att.getAttendance()==true){//if they're actually going
 									att.setAttendance(false);
 									differential-=1;;//forcing them to not go
@@ -101,12 +116,68 @@ public class Party{
 							}
 						}
 					}
+					if(differential==0) break;					
 				}
 				if(differential==0) break;
 			}
 			if(differential!=0) System.out.println("Error: cannot sufficiently reduce guest list");
+			/*for(int i:numGuestsPerCompany){
+				System.out.println(i);
+			}*/
+			//THE ABOVE BLOCK ENSURES THAT THE REQUISITE DELETIONS ARE DONE MOST FAIRLY, WHERE COMPANIES WITH THE MOST ATTENDEES ARE PENALIZED FIRST BUT EQUALLY AMONGST THEMSELVES.
 		}
 	}
+	public void enterManually(){//THIS MUST BE RUN BEFORE ENUMERATEGUESTS.
+			System.out.println("\n\nWould you like to enter guests manually? (Y/N)\n");
+			boolean tempbool = getYN();
+			if(tempbool){
+				String tempAttFN, tempAttLN;
+				int tempCoID;
+				for(;;){ //loop for adding people manually
+					System.out.println("\nEnter the FIRST NAME of the attendee:\n");
+					tempAttFN = univScan.nextLine();
+					System.out.println("\nEnter the LAST NAME of the attendee:\n");
+					tempAttLN = univScan.nextLine();
+					System.out.println("\nEnter the COMPANY ID of the attendee:\n");
+					for(;;){
+					try{
+						tempCoID = Integer.parseInt(univScan.nextLine());
+						//System.out.println("ASdf");
+						break;
+					}
+					catch(NumberFormatException e){
+						System.out.println("\nFormat your response in an INTEGER:\n"); //companyID must be an integer for other parts of code to NOT throw this error, so catching it here
+						continue;
+					}
+					}
+					System.out.println("\nSave guest: " + tempAttFN + " " + tempAttLN + " [CompanyID=" + tempCoID + "]? (Y/N)\n");
+					if(!getYN()) continue;
+					int tempsize = guestObjs.size(); //for efficiency because used twice in following lines
+					guestObjs.add(new Attendee(tempsize+1, tempAttFN, tempAttLN, tempCoID));
+					System.out.print("\nSuccess! Guest added: " + guestObjs.get(tempsize).toString()+"\n");
+					System.out.println("\nWould you like to enter another guest? (Y/N)\n");
+					if(!getYN()) break;
+				}	
+			}
+		System.out.println(guestObjs.get(guestObjs.size()-1).toString()); //LATEST ADDITION TO GUESTOBJS 
+	}
 	public void sortGuests(){} //LOL i wonder how many centuries until i'll be able to rewrite this
+	public boolean getYN(){
+		boolean temp; //just stores output of user so we can close the scanner to save memory
+		for(;;){
+			//System.out.println("tihgn");
+			String response = univScan.nextLine();
+			if(response.equals("Y")){
+				temp = true;
+				break;
+			};
+			if(response.equals("N")){
+				temp = false;
+				break;
+			}
+			System.out.println("\nPlease format your response Y/N:\n");
+		}
+		return temp;
+	} //implements a quick scanner to get a y/n input from user - this is a separate method because of how often it was used
 	
 }

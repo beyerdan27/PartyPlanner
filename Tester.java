@@ -13,6 +13,7 @@ public class Tester{
 		Party temp = new Party(10, 10);
 		temp.loadData();
 		temp.enumerateGuests();
+		temp.enterManually();
 		/*for(int c:temp.enumerateGuests()){
 			System.out.println(c);
 		}*/
