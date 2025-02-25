@@ -81,7 +81,7 @@ public class Party{
 		}*/
 		return 200;
 	}
-	public void enumerateGuests(){ //this is the part that whines if any of the math wont work out so run this before sortGuests to avoid errors (it also eliminates excess guests)
+	public void enumerateGuests(){ //this part whines if any of the math wont work out, so run this before sortGuests to avoid errors, (it also eliminates excess guests)
 		for(Attendee att:guestObjs){
 			int currentCompanyIDBeingCounted = att.getCoID();
 			int tempct = numGuestsPerCompany.get(currentCompanyIDBeingCounted); 
@@ -128,7 +128,7 @@ public class Party{
 			//THE ABOVE BLOCK ENSURES THAT THE REQUISITE DELETIONS ARE DONE MOST FAIRLY, WHERE COMPANIES WITH THE MOST ATTENDEES ARE PENALIZED FIRST BUT EQUALLY AMONGST THEMSELVES.
 		}
 	}
-	public void enterManually(){//THIS MUST BE RUN BEFORE ENUMERATEGUESTS.
+	public void enterManually(){//THIS MUST BE RUN BEFORE ENUMERATEGUESTS. - EnterManually allows user to contribute to the collection of attendee data BEFORE it is sorted
 			System.out.println("\n\nWould you like to enter guests manually? (Y/N)\n");
 			boolean tempbool = getYN();
 			if(tempbool){
@@ -162,10 +162,10 @@ public class Party{
 			}
 		//System.out.println(guestObjs.get(guestObjs.size()-1).toString()); //LATEST ADDITION TO GUESTOBJS for debugging
 	}
-	public void sortGuests(){ //LOL i wonder how many centuries until i'll be able to rewrite this
+	public void sortGuests(){
 		//if run after enumguests, this should produce no errors (haha funny right)
-		//places largest companies first
-		//algo rotates starting table each time
+		//places largest companies first in line to be sorted
+		//algo rotates starting table each time, helps it run smoother
 		int startingTableIndex=0; //indicates table at which populating will begin for any company, rotating right
 		int currentPopulatingIndex;
 		int guestsRemaining;
@@ -242,7 +242,7 @@ public class Party{
 		}
 		System.out.println("\n"+guestObjs.get(id-1).toString()+"\n");
 	}
-	public void findAttendeeByName(String fname, String lname){ //same thing, just loops until it finds the name
+	public void findAttendeeByName(String fname, String lname){ //same thing, just loops until it finds the name of attendee and toString()s it
 		for(Attendee att:guestObjs){
 			if(att.getFName().equals(fname)&&att.getLName().equals(lname)){
 				System.out.println("\n"+att.toString()+"\n");
